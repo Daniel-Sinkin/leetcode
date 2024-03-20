@@ -84,24 +84,6 @@ class Solution:
 
         return dp[-1][-1]
 
-
-def isMatch(s: str, p: str) -> bool:
-    p = "*?d?"
-    s = "abcde"
-
-    dp = [[False] * len(p)] * len(s)
-
-    # i = 0
-    for j in range(len(p)):
-        dp[0][j] = (p[j] == "*") # Only * matches empty string
-
-    # s, [*, x:Y] matches iff s, [x:Y] or s[1:], [*x:Y] matches
-    # Case p[i + 1] == "?" implies dp[i+1][j] == dp[i][j-1] b.c.
-    # Ya, X? matches if ? = a and Y, X matches
-    # Case p[i + 1] == * implies 
-    # Case p[i + 1] is __CHAR__ requires s[i + 1
-    raise NotImplementedError("WIP")
-
 def print_matrix(M: list[list[any]]) -> None:
     for row in M:
         _s = "["
