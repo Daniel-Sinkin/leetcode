@@ -2,7 +2,8 @@ import os
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
+from dash.dependencies import Input, Output
 
 # Total number of problems on LeetCode
 TOTAL_PROBLEMS = 3273
@@ -10,15 +11,23 @@ PROBLEMS_PER_ROW = 30  # Reduced number of problems per row to 30
 
 
 # Function to count and organize solved problems by difficulty
-def get_solved_problems(directory):
+def get_solved_problems(directory, include_cpp=True, include_py=True, include_rs=True):
     solved_problems = {"Easy": set(), "Medium": set(), "Hard": set()}
+
+    extensions = []
+    if include_cpp:
+        extensions.append(".cpp")
+    if include_py:
+        extensions.append(".py")
+    if include_rs:
+        extensions.append(".rs")
 
     for root, _, files in os.walk(directory):
         if "WIP" in root:
             continue
 
         for file in files:
-            if file.endswith((".cpp", ".py", ".rs")):
+            if any(file.endswith(ext) for ext in extensions):
                 parts = root.split("_")
                 if len(parts) < 2:
                     continue
@@ -32,10 +41,6 @@ def get_solved_problems(directory):
     return solved_problems
 
 
-# Get the solved problems
-directory = "."  # Use current directory, modify if needed
-solved_problems = get_solved_problems(directory)
-
 # Initialize Dash app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -44,7 +49,7 @@ colors = {
     "Easy": "lightgreen",
     "Medium": "yellow",
     "Hard": "lightcoral",
-    "Unsolved": "#1c1c1c",
+    "Unsolved": "#1c1c1c",  # Darker gray for unsolved problems
 }
 
 
@@ -102,8 +107,92 @@ def create_problem_grid(solved_problems):
 
 # Define the app layout
 app.layout = html.Div(
-    [html.H1("LeetCode Problem Tracker"), create_problem_grid(solved_problems)]
+    [
+        html.H1("Daniels"),
+        html.H1("LeetCode Problem Tracker"),
+        html.Div(
+            [
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                dcc.Checklist(
+                                    id="language-selector",
+                                    options=[
+                                        {
+                                            "label": "",
+                                            "value": "cpp",
+                                        },  # Empty label since label is added manually below
+                                        {"label": "", "value": "py"},
+                                        {"label": "", "value": "rs"},
+                                    ],
+                                    value=[
+                                        "cpp",
+                                        "py",
+                                        "rs",
+                                    ],  # All selected by default
+                                    inline=False,  # Makes the checkboxes stack vertically
+                                )
+                            ],
+                            style={
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "alignItems": "center",
+                            },
+                        ),
+                        html.Div(
+                            [
+                                html.Div(
+                                    "C++",
+                                    className="label",
+                                    style={"marginLeft": "10px"},
+                                ),
+                                html.Div(
+                                    "Python",
+                                    className="label",
+                                    style={"marginLeft": "10px"},
+                                ),
+                                html.Div(
+                                    "Rust",
+                                    className="label",
+                                    style={"marginLeft": "10px"},
+                                ),
+                            ],
+                            style={
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "justifyContent": "center",
+                                "alignItems": "flex-start",
+                            },
+                        ),
+                    ],
+                    style={
+                        "display": "flex",
+                        "justifyContent": "center",
+                        "alignItems": "center",
+                        "marginBottom": "20px",
+                    },
+                )
+            ],
+            style={"textAlign": "center"},
+        ),
+        html.Div(id="grid-container"),
+    ]
 )
+
+
+# Callback to update the grid based on selected languages
+@app.callback(
+    Output("grid-container", "children"), [Input("language-selector", "value")]
+)
+def update_grid(selected_languages):
+    include_cpp = "cpp" in selected_languages
+    include_py = "py" in selected_languages
+    include_rs = "rs" in selected_languages
+
+    solved_problems = get_solved_problems(".", include_cpp, include_py, include_rs)
+    return create_problem_grid(solved_problems)
+
 
 # Run the app
 if __name__ == "__main__":
