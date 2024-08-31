@@ -2,7 +2,6 @@ from bisect import bisect_left
 
 
 class MedianFinder:
-
     def __init__(self):
         self.nums = None
 
@@ -28,9 +27,3 @@ class MedianFinder:
             return (
                 self.nums[len(self.nums) // 2 - 1] + self.nums[len(self.nums) // 2]
             ) / 2.0
-
-
-# Your MedianFinder object will be instantiated and called as such:
-# obj = MedianFinder()
-# obj.addNum(num)
-# param_2 = obj.findMedian()
