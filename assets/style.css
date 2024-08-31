@@ -1,32 +1,43 @@
 body {
     background-color: #2c2c2c;
+    /* Dark gray background */
     color: white;
+    /* White text */
 }
 
 h1 {
     color: white;
+    /* White header text */
     text-align: center;
 }
 
 .grid-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 1000px;
-    margin: 0 auto;
+    flex-wrap: nowrap;
+    justify-content: left;
+    width: 1200px;
+    /* Adjusted width to accommodate 30 items with larger margins */
+    margin-left: 20px;
+    /* Increase left margin for better alignment */
 }
 
 .grid-item {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    /* Increased square size */
+    height: 25px;
+    /* Increased square size */
     display: inline-block;
-    margin: 3px;
+    margin: 5px;
+    /* Increased margin for more spacing */
 }
 
 .counter {
     width: 60px;
+    /* Adjust to ensure space for 4-digit numbers */
     text-align: right;
     padding-right: 10px;
     color: white;
     font-weight: bold;
+    margin-right: 10px;
+    /* Margin to separate counter from grid */
 }
