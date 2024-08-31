@@ -1,20 +1,23 @@
 class Solution {
 public:
     int fib(int n) {
-        if(n == 0)
+        if (n == 0) {
             return 0;
-        else if (n == 1)
+        }
+        if (n == 1) {
             return 1;
-
-        int fibs[n + 1];
-        fibs[0] = 0;
-
-        fibs[1] = 1;
-
-        for(int i = 2; i <= n; i++) {
-            fibs[i] = fibs[i - 1] + fibs[i - 2];
         }
 
-        return fibs[n];
+        int fib0 = 1;
+        int fib1 = 1;
+        int fib2 = 0;
+
+        for (int i = 2; i < n; ++i) {
+            fib2 = fib1;
+            fib1 = fib0;
+            fib0 = fib1 + fib2;
+        }
+
+        return fib0;
     }
 };
