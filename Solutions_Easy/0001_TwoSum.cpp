@@ -1,18 +1,23 @@
+#include <unordered_map>
+
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        vector<int> retVal;
-
-        // Under assumption there exists exactly one solution
-        for(int i = 0; i < nums.size() - 1; i++) {
-            for(int j = i + 1; j < nums.size(); j++) {
-                if(nums[i] + nums[j] == target) {
-                    retVal.push_back(i);
-                    retVal.push_back(j);
-                    return retVal;
-                }
+    vector<int> twoSum(vector<int> &nums, int target) {
+        std::unordered_map<int, int> seens;
+        seens.reserve(nums.size());
+        std::vector<int> retval{-1, -1};
+        for (int i = 0; i < nums.size(); ++i) {
+            auto search = seens.find(nums[i]);
+            bool found_num = search != seens.end();
+            if (found_num) {
+                retval[0] = seens.at(nums[i]);
+                retval[1] = i;
+                return retval;
+            } else {
+                // We are looking for a m such that n + m = t <=> m = t - n
+                seens.insert({target - nums[i], i});
             }
         }
-        return retVal;
+        return retval;
     }
 };
